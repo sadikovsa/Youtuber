@@ -1,0 +1,61 @@
+.yt {
+  min-width: 325px;
+  max-width: 325px;
+  margin: 0 16px 40px 0;
+  cursor: pointer;
+
+  @media (max-width: 576px) {
+    min-width: 250px;
+    margin: 0;
+  }
+
+  &-thumbnail {
+    &__img {
+      object-fit: cover;
+      width: 100%;
+    }
+  }
+
+  &-title {
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    color: rgb(13, 13, 13);
+  }
+
+  &-channel {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgb(96, 96, 96);
+  }
+}
+
+[style*="--aspect-ratio"]> :first-child {
+  width: 100%;
+}
+
+[style*="--aspect-ratio"]>img {
+  height: auto;
+}
+
+@supports (--custom:property) {
+  [style*="--aspect-ratio"] {
+    position: relative;
+  }
+
+  [style*="--aspect-ratio"]::before {
+    content: "";
+    display: block;
+    padding-bottom: calc(100% / (var(--aspect-ratio)));
+  }
+
+  [style*="--aspect-ratio"]> :first-child {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+  }
+}

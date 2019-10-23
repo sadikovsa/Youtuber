@@ -1,0 +1,58 @@
+.keyboard {
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  height: auto;
+  padding: 10px;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  z-index: 2147483644;
+  font-family: arial, sans-serif;
+  font-size: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: top 0.5s;
+  button {
+    margin: 2px;
+    width: 29px;
+    height: 29px;
+    user-select: none;
+    &:last-child {
+      flex-grow: 1;
+    }
+  }
+  &.show {
+    top: 50%;
+  }
+  &-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  &-close {
+    background-color: transparent;
+    height: 20px;
+    width: 20px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+    flex-grow: unset !important;
+
+  }
+  @media (max-width: 576px) {
+    display: none;
+  }
+
+  .keyboard-wrapper,
+  .keyboard-wrapper:focus {
+    outline-color: transparent;
+    width: 495px;
+    user-select: none;
+    left: 629px;
+    top: 231px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+}

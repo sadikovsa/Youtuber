@@ -1,0 +1,46 @@
+.container {
+  width: 100%;
+  padding: 10px 30px;
+  background-color: #f9f9f9;
+
+  @media (max-width: 576px) {
+    padding: 10px;
+  }
+}
+table {
+  width: 100%;
+  padding: 0;
+  border-spacing: 0;
+}
+
+
+
+#next_result {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 30px;
+  font-size: 14px;
+
+  background-color: red;
+  color: white;
+  border: 1px solid transparent;
+  cursor: pointer;
+
+  &:hover {
+    color: red;
+    background-color: white;
+    border: 1px solid red;
+  }
+
+  &:active {
+    color: white;
+    background-color: red;
+    border: 1px solid transparent;
+  }
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
