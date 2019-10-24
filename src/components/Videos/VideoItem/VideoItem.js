@@ -2,9 +2,9 @@ import React from 'react';
 
 import './VideoItem.scss';
 
-const videoItem = (props) => {
+const videoItem = ( props ) => {
     return (
-        <div className="yt">
+        <div className="yt" onClick={props.videoClicked}>
             <div className="yt-thumbnail">
                 <img src={props.videoPreview} alt="thumbnail" className="yt-thumbnail__img"/>
             </div>
