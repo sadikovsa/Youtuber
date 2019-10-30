@@ -15,7 +15,12 @@ const header = ( props ) => {
                 keyboardToggle={props.keyboardToggle}
                 searchChange={props.searchChange}
                 value={props.value}/>
-            <HeaderRight/>
+            <HeaderRight
+                loginBtnClick={props.loginBtnClick}
+                loginBtnText={props.loginBtnText}
+                userName={props.userName}
+                userImg={props.userImg}
+            />
         </header>
     )
 };

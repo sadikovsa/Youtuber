@@ -5,6 +5,7 @@ import Auxiliary from '../Auxiliary';
 import Header from '../../components/Header/Header';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import Keyboard from '../../components/Keyboard/Keyboard';
+import LoginModal from "../../components/LoginModal/LoginModal";
 
 class Wrapper extends Component {
     constructor( props ) {
@@ -12,6 +13,7 @@ class Wrapper extends Component {
         this.state = {
             keyboardShow: false,
             sidebarToggle: false,
+            loginModalShow: false,
         }
     }
 
@@ -33,6 +35,7 @@ class Wrapper extends Component {
         } );
     };
 
+
     render() {
         return (
             <Auxiliary>
@@ -42,6 +45,10 @@ class Wrapper extends Component {
                     keyboardToggle={this.keyboardShow}
                     searchChange={this.props.searchChange}
                     value={this.props.value}
+                    loginBtnClick={this.props.loginBtnClick}
+                    loginBtnText={this.props.loginBtnText}
+                    userName={this.props.userName}
+                    userImg={this.props.userImg}
                 />
                 <main>
                     <Sidebar sidebarToggle={this.state.sidebarToggle}/>
@@ -54,7 +61,7 @@ class Wrapper extends Component {
                     activeLang={this.props.activeLang}
                 >
                 </Keyboard>
-
+                <LoginModal loginModalShow={this.props.loginModalShow} loginModalClick={this.props.loginModalClick}/>
             </Auxiliary>
         );
     }

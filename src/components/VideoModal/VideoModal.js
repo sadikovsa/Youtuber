@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import './VideoModal.scss';
 
-class VideoModal extends Component {
-    shouldComponentUpdate( nextProps, nextState ) {
-        return nextProps.modalShow !== this.props.modalShow || nextProps.children !== this.props.children;
-    };
+class VideoModal extends PureComponent {
 
     render() {
         let classes = [ 'youTuberModal', this.props.modalShow ? 'show' : '' ];

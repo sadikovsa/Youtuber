@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+import { gapi, loadAuth2 } from 'gapi-script'
+
+import Auxiliary from './hoc/Auxiliary';
 import Wrapper from './hoc/Wrapper/Wrapper';
 import Youtuber from './containers/Youtuber/Youtuber';
-import VideoItem from './components/Videos/VideoItem/VideoItem';
-import VideoModal from "./components/VideoModal/VideoModal";
+
+const API_KEY = 'AIzaSyCOmHYm_KXnDbRFBIfl3AfGblApt081sno';
+const CLIENT_ID = '639598738962-rr5lr6rq7tcv2k2trcvt4ngem2p35d19.apps.googleusercontent.com';
 
 class App extends Component {
     constructor( props ) {
@@ -10,9 +14,8 @@ class App extends Component {
         this.state = {
             currentValue: '',
             activeLang: 'langRu',
-            videoId: 0,
-            videoTitle: '',
-            videoModalShow: false,
+            loginModalShow: false,
+            user: null,
             videos: [
                 {
                     id: 'B7rZxLzSAOM',
@@ -86,51 +89,74 @@ class App extends Component {
             } );
         }
     };
-    videoClickHandler = ( id, title ) => {
-        this.setState( {
-            videoId: id,
-            videoTitle: title,
-            videoModalShow: true
-        } )
+    loginBtnClickHandler = () => {
+        if ( this.state.user ) {
+            this.signOut();
+        } else {
+            this.setState( {
+                loginModalShow: true
+            } );
+        }
+
     };
 
-    modalClickHandler = () => {
-        this.setState( {
-            videoModalShow: false
+    async loginModalClickHandler() {
+        const auth2 = await loadAuth2( CLIENT_ID, '' );
+        auth2.signIn( {
+            scope: "https://www.googleapis.com/auth/youtube.readonly"
+        } )
+            .then( () => {
+                const currentUser = auth2.currentUser.get();
+                const name = currentUser.getBasicProfile().getName();
+                const profileImg = currentUser.getBasicProfile().getImageUrl();
+                this.setState( {
+                    user: {
+                        name: name,
+                        profileImg: profileImg
+                    },
+                    loginModalShow: false
+                } );
+                console.log( "Sign-in successful");
+            } )
+            .catch( ( err ) => {
+                console.error( "Error signing in", err );
+            } );
+    };
+
+
+    signOut = () => {
+        const auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then( () => {
+            this.setState( { user: null } );
+            console.log( 'User signed out.' );
         } );
     };
+
 
     render() {
-        const videoList = this.state.videos.map( ( video, index ) => {
-            return (
-                <VideoItem
-                    key={index}
-                    videoClicked={() => this.videoClickHandler( video.id, video.title )}
-                    videoTitle={video.title}
-                    videoChannel={video.chanel}
-                    videoPreview={`http://i.ytimg.com/vi/${video.id}/sddefault.jpg`}
-                />
-            )
-        } );
+        let loginBtnText = '';
+        if ( this.state.user ) {
+            loginBtnText = 'Выйти';
+        } else {
+            loginBtnText = 'Войти';
+        }
         return (
-            <div>
+            <Auxiliary>
                 <Wrapper
                     searchChange={this.searchInputHandler}
                     value={this.state.currentValue}
                     keyboardClicked={( event ) => this.keyboardClickHandler( event )}
                     activeLang={this.state.activeLang}
+                    loginBtnClick={this.loginBtnClickHandler}
+                    loginModalShow={this.state.loginModalShow}
+                    loginModalClick={() => this.loginModalClickHandler()}
+                    loginBtnText={loginBtnText}
+                    userName={this.state.user ? this.state.user.name : null}
+                    userImg={this.state.user ? this.state.user.profileImg : null}
                 >
-                    <Youtuber>
-                        {videoList}
-                    </Youtuber>
-                    <VideoModal
-                        modalClose={this.modalClickHandler}
-                        modalShow={this.state.videoModalShow}
-                        videoId={this.state.videoId}
-                        videoTitle={this.state.videoTitle}
-                    />
+                    <Youtuber videoList={this.state.videos}/>
                 </Wrapper>
-            </div>
+            </Auxiliary>
         );
     }
 }

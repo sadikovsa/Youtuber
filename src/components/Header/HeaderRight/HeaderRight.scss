@@ -1,7 +1,52 @@
 .header {
   &-right {
     display: flex;
-    width: 250px;
+    align-items: center;
     height: 100%;
+    padding-right: 30px;
+  }
+}
+.login-btn {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 30px;
+  font-size: 14px;
+  height: 40px;
+
+  background-color: red;
+  color: white;
+  border: 1px solid transparent;
+  cursor: pointer;
+
+  &:hover {
+    color: red;
+    background-color: white;
+    border: 1px solid red;
+  }
+
+  &:active {
+    color: white;
+    background-color: red;
+    border: 1px solid transparent;
+  }
+}
+
+.user-block {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  font-size: 14px;
+}
+.user-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  overflow: hidden;
+  border-radius: 50%;
+  margin-right: 15px;
+  img {
+
   }
 }
