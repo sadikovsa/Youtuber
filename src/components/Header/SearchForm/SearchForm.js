@@ -6,9 +6,13 @@ import SearchInput from './SearchInput/SearchInput';
 import KeyboardBtn from './KeyboardBtn/KeyboardBtn';
 
 const searchForm = ( props ) => {
+
+    const formSubmit = (e) => {
+        e.preventDefault();
+    };
     return (
         <div className="search">
-            <form className="search-form">
+            <form className="search-form" onSubmit={(e) => formSubmit(e)}>
                 <div className="search-form__wrap">
                     <SearchInput
                         searchChange={props.searchChange}
@@ -18,7 +22,7 @@ const searchForm = ( props ) => {
                         keyboardToggle={props.keyboardToggle}
                     />
                 </div>
-                <SearchBtn/>
+                <SearchBtn searchClick={props.searchClick}/>
             </form>
         </div>
     )

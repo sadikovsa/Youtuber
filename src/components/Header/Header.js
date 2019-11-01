@@ -14,7 +14,9 @@ const header = ( props ) => {
             <SearchForm
                 keyboardToggle={props.keyboardToggle}
                 searchChange={props.searchChange}
-                value={props.value}/>
+                searchClick={props.searchClick}
+                value={props.value}
+            />
             <HeaderRight
                 loginBtnClick={props.loginBtnClick}
                 loginBtnText={props.loginBtnText}

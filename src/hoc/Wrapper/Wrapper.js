@@ -44,6 +44,7 @@ class Wrapper extends Component {
                     burgerToggle={this.state.sidebarToggle}
                     keyboardToggle={this.keyboardShow}
                     searchChange={this.props.searchChange}
+                    searchClick={this.props.searchClick}
                     value={this.props.value}
                     loginBtnClick={this.props.loginBtnClick}
                     loginBtnText={this.props.loginBtnText}

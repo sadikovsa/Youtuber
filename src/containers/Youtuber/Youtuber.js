@@ -1,11 +1,11 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 
 import Auxiliary from '../../hoc/Auxiliary';
 import Videos from '../../components/Videos/Videos';
 import VideoItem from "../../components/Videos/VideoItem/VideoItem";
 import VideoModal from "../../components/VideoModal/VideoModal";
 
-class Youtuber extends PureComponent {
+class Youtuber extends Component {
     constructor( props ) {
         super( props );
         this.state = {
@@ -36,15 +36,23 @@ class Youtuber extends PureComponent {
         console.log(this.props.videoList)
     }
 
+    componentDidUpdate(prevProps) {
+        // Популярный пример (не забудьте сравнить пропсы):
+        if (this.props.videoList !== prevProps.videoList) {
+            this.setState({videos: this.props.videoList});
+        }
+    }
+
     render() {
+
         const videoItems = this.state.videos.length > 0 ? this.state.videos.map( ( video, index ) => {
             return (
                 <VideoItem
                     key={index}
-                    videoClicked={() => this.videoClickHandler( video.id, video.title )}
-                    videoTitle={video.title}
-                    videoChannel={video.chanel}
-                    videoPreview={`http://i.ytimg.com/vi/${video.id}/sddefault.jpg`}
+                    videoClicked={() => this.videoClickHandler( video.id.videoId, video.snippet.title )}
+                    videoTitle={video.snippet.title}
+                    videoChannel={video.snippet.channelTitle}
+                    videoPreview={video.snippet.thumbnails.medium.url}
                 />
             )
         } ) : <p> Записей не найдено </p>;

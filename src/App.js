@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { gapi, loadAuth2 } from 'gapi-script'
 
 import Auxiliary from './hoc/Auxiliary';
 import Wrapper from './hoc/Wrapper/Wrapper';
@@ -16,55 +15,74 @@ class App extends Component {
             activeLang: 'langRu',
             loginModalShow: false,
             user: null,
-            videos: [
-                {
-                    id: 'B7rZxLzSAOM',
-                    title: 'Как я стал фрилансером веб-разработчиком',
-                    chanel: 'Glo Academy — HTML, CSS и JS'
-                },
-                {
-                    id: 'NF6DV-S9DEE',
-                    title: 'Способы перебора массивов в JavaScript | Часть 2 | Уроки JavaScript',
-                    chanel: 'Glo Academy — HTML, CSS и JS'
-                },
-                {
-                    id: 'NtcgznHOBlc',
-                    title: 'Способы перебора массивов в JavaScript | Часть 1 | Уроки JavaScript',
-                    chanel: 'Glo Academy — HTML, CSS и JS'
-                },
-                {
-                    id: 'c5--bmtCCVo',
-                    title: 'Открытый урок с курса JS 9.0 - Слайдер карусель',
-                    chanel: 'Glo Academy — HTML, CSS и JS'
-                },
-                {
-                    id: 'amrIqeOXQW0',
-                    title: 'S-фичи #4 | Круглый прогрессбар на JavaScript | Circle progress bar',
-                    chanel: 'Glo Academy — HTML, CSS и JS'
-                },
-                {
-                    id: 'VpM4kAwuJTY',
-                    title: 'JavaScript фичи #3 | Прогресс бар при прокрутке страницы | JS',
-                    chanel: 'Glo Academy — HTML, CSS и JS'
-                },
-                {
-                    id: '__Kavgr47F8',
-                    title: 'JavaScript фичи #2 Parallax на чистом JS | Параллакс эффект',
-                    chanel: 'Glo Academy — HTML, CSS и JS'
-                },
-                {
-                    id: 'DqfgJDtDIcg',
-                    title: 'JavaScript фичи #1 | 3D карточки с наведением | JS фичи',
-                    chanel: 'Glo Academy — HTML, CSS и JS'
-                },
-            ],
+            videos: [],
         }
     }
+
+    signIn = () => {
+        window.gapi.auth2.getAuthInstance()
+            .signIn( {
+                scope: "https://www.googleapis.com/auth/youtube.readonly"
+            } )
+            .then( () => {
+                const currentUser = window.gapi.auth2.getAuthInstance().currentUser.get();
+                const name = currentUser.getBasicProfile().getName();
+                const profileImg = currentUser.getBasicProfile().getImageUrl();
+                this.setState( {
+                    user: {
+                        name: name,
+                        profileImg: profileImg
+                    },
+                    loginModalShow: false
+                } );
+            } )
+            .then( () => {
+                this.youtubeRequest( {
+                    method: 'search',
+                    part: 'snippet',
+                    order: 'rating',
+                    regionCode: 'RU',
+                    maxResults: 12
+                } );
+            } )
+            .catch( ( err ) => {
+                console.error( err );
+            } );
+    };
+    youtubeRequest = options => {
+        window.gapi.client.youtube[ options.method ]
+            .list( options )
+            .then( response => {
+                this.setState( { videos: response.result.items } );
+                console.log( response.result.items )
+            } )
+            .catch( err => console.error( 'Во время запроса произошла ошибка: ' + err ) );
+    };
+
+    signOut = () => {
+        const auth2 = window.gapi.auth2.getAuthInstance();
+        auth2.signOut().then( () => {
+            this.setState( { user: null } );
+            console.log( 'User signed out.' );
+        } );
+    };
 
     searchInputHandler = ( event ) => {
         const newValue = event.target.value;
         this.setState( {
             currentValue: newValue
+        } );
+    };
+
+    searchBtnClickHandler = () => {
+        console.log( 'clicked' );
+        this.youtubeRequest( {
+            method: 'search',
+            part: 'snippet',
+            order: 'date',
+            maxResults: 12,
+            regionCode: 'RU',
+            q: this.state.currentValue
         } );
     };
 
@@ -89,6 +107,7 @@ class App extends Component {
             } );
         }
     };
+
     loginBtnClickHandler = () => {
         if ( this.state.user ) {
             this.signOut();
@@ -97,40 +116,39 @@ class App extends Component {
                 loginModalShow: true
             } );
         }
-
     };
 
-    async loginModalClickHandler() {
-        const auth2 = await loadAuth2( CLIENT_ID, '' );
-        auth2.signIn( {
-            scope: "https://www.googleapis.com/auth/youtube.readonly"
-        } )
-            .then( () => {
-                const currentUser = auth2.currentUser.get();
-                const name = currentUser.getBasicProfile().getName();
-                const profileImg = currentUser.getBasicProfile().getImageUrl();
-                this.setState( {
-                    user: {
-                        name: name,
-                        profileImg: profileImg
-                    },
-                    loginModalShow: false
-                } );
-                console.log( "Sign-in successful");
-            } )
-            .catch( ( err ) => {
-                console.error( "Error signing in", err );
+    componentDidMount() {
+        const script = document.createElement( "script" );
+        script.src = "https://apis.google.com/js/api.js";
+
+        script.onload = () => {
+            window.gapi.load( 'client:auth2', () => {
+                window.gapi.client.setApiKey( API_KEY );
+                window.gapi.client.load( "https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest" )
+                    .then( () => {
+                        console.log( "GAPI client loaded for API" );
+                    } )
+                    .then( () => {
+                        this.youtubeRequest( {
+                            method: 'search',
+                            part: 'snippet',
+                            order: 'date',
+                            maxResults: 12,
+                            regionCode: 'RU'
+                        } );
+                    } )
+                window.gapi.auth2.init( {
+                    client_id: CLIENT_ID
+                } )
             } );
-    };
+        };
 
 
-    signOut = () => {
-        const auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then( () => {
-            this.setState( { user: null } );
-            console.log( 'User signed out.' );
-        } );
-    };
+        document.body.appendChild( script );
+
+
+    }
 
 
     render() {
@@ -144,12 +162,13 @@ class App extends Component {
             <Auxiliary>
                 <Wrapper
                     searchChange={this.searchInputHandler}
+                    searchClick={this.searchBtnClickHandler}
                     value={this.state.currentValue}
                     keyboardClicked={( event ) => this.keyboardClickHandler( event )}
                     activeLang={this.state.activeLang}
                     loginBtnClick={this.loginBtnClickHandler}
                     loginModalShow={this.state.loginModalShow}
-                    loginModalClick={() => this.loginModalClickHandler()}
+                    loginModalClick={() => this.signIn()}
                     loginBtnText={loginBtnText}
                     userName={this.state.user ? this.state.user.name : null}
                     userImg={this.state.user ? this.state.user.profileImg : null}

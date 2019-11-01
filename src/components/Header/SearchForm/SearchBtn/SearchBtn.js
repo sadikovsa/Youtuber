@@ -4,7 +4,7 @@ import './SearchBtn.scss';
 
 const searchBtn = ( props ) => {
     return (
-        <button type="submit" className="search-form__btn">
+        <button type="submit" className="search-form__btn" onClick={props.searchClick}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" className="search-form__btn-loupe">
                 <g>
                     <path
